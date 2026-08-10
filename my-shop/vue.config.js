@@ -1,5 +1,6 @@
+const isProd = process.env.NODE_ENV === 'production';
+
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/my-shop/'
-    : '/'
+  publicPath: isProd ? '/my-shop/' : '/',
+  outputDir: 'dist'
 };
