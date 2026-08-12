@@ -1,20 +1,15 @@
 <template>
   <div id="app">
-    <ProductCard
-      name="Українська вишиванка"
-      description="Стильна вишиванка з традиційними орнаментами."
-      :price="1500"
-      image="https://images.prom.ua/2656644983_vishita-cholovicha-futbolka.jpg"
-    />
+    <ProductList />
   </div>
 </template>
 
 <script>
-import ProductCard from "./components/ProductCard.vue";
+import ProductList from "./components/ProductList.vue";
 
 export default {
   components: {
-    ProductCard
+    ProductList
   }
 };
 </script>
