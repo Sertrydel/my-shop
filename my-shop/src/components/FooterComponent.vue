@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer-section">
       <h3>Контакти</h3>
-      <p>Email: sertrydel@gmail.com</p>
+      <p>Email: 123123123sertrydel@gmail.com</p>
       <p>Телефон: +380 52 42 14 88</p>
     </div>
 
