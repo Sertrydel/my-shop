@@ -2,81 +2,163 @@
     <div class="reviews">
         <h2>Відгуки</h2>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Ім'я</th>
-                    <th>Рейтинг</th>
-                    <th>Коментар</th>
-                </tr>
-            </thead>
+        <!-- Форма додавання відгуку -->
+        <form @submit.prevent="addReview" class="review-form">
+            <input v-model="newReview.name" type="text" placeholder="Ваше ім'я" required />
 
-            <tbody>
-                <tr v-for="(review, index) in reviews" :key="index">
-                    <td>{{ review.Name }}</td>
-                    <td>{{ review.Rating }}</td>
-                    <td>{{ review.Comment }}</td>
-                </tr>
-            </tbody>
-        </table>
+            <select v-model="newReview.rating" required>
+                <option value="" disabled>Оберіть рейтинг</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="1">⭐</option>
+            </select>
+
+            <textarea v-model="newReview.comment" placeholder="Ваш коментар" required></textarea>
+
+            <button type="submit">Додати відгук</button>
+        </form>
+
+        <!-- Відображення відгуків -->
+        <div class="reviews-list">
+            <div v-for="(review, index) in reviews" :key="index" class="review">
+                <h3>{{ review.name }}</h3>
+
+                <div class="rating">
+                    {{ "⭐".repeat(Number(review.rating)) }}
+                </div>
+
+                <p>{{ review.comment }}</p>
+            </div>
+
+            <p v-if="reviews.length === 0" class="empty">
+                Поки що відгуків немає. Будьте першим!
+            </p>
+        </div>
     </div>
 </template>
 
 <script>
-import Papa from "papaparse";
-
 export default {
     name: "ReviewsComponent",
 
     data() {
         return {
-            reviews: []
+            reviews: [],
+
+            newReview: {
+                name: "",
+                rating: "",
+                comment: ""
+            }
         };
     },
 
     created() {
-        const csvContent = `Name,Rating,Comment
-Ілля,5,Дуже хороший товар!
-Андрій,4,Мені сподобалося.
-Вікторія,5,Все чудово!
-Ростислав,3,Нормальний товар.`;
+        const savedReviews = localStorage.getItem("reviews");
 
-        Papa.parse(csvContent.trim(), {
-            header: true,
-            complete: (result) => {
-                this.reviews = result.data;
-            }
-        });
+        if (savedReviews) {
+            this.reviews = JSON.parse(savedReviews);
+        }
+    },
+
+    methods: {
+        addReview() {
+            const review = {
+                name: this.newReview.name,
+                rating: this.newReview.rating,
+                comment: this.newReview.comment
+            };
+
+            this.reviews.push(review);
+
+            localStorage.setItem("reviews", JSON.stringify(this.reviews));
+
+            this.newReview = {
+                name: "",
+                rating: "",
+                comment: ""
+            };
+        }
     }
 };
 </script>
 
 <style scoped>
 .reviews {
-    width: 100%;
-    margin: 30px auto;
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
 }
 
 h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
-table {
-    width: 90%;
-    margin: 0 auto;
-    border-collapse: collapse;
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 35px;
 }
 
-th,
-td {
+.review-form input,
+.review-form select,
+.review-form textarea {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.review-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.review-form button {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.review-form button:hover {
+    background-color: #555;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review {
+    padding: 15px;
     background-color: #f8f9fa;
-    padding: 4px;
+    border-radius: 8px;
     border: 1px solid #ddd;
-    text-align: left;
 }
 
-th {
-    font-weight: bold;
+.review h3 {
+    margin: 0 0 5px;
+}
+
+.rating {
+    margin-bottom: 8px;
+}
+
+.review p {
+    margin: 0;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
 }
 </style>
