@@ -164,7 +164,7 @@ table {
 th,
 td {
     background-color: #f8f9fa;
-    padding: 4px;
+    padding: 5px;
     border: 1px solid #ddd;
     text-align: left;
 }
