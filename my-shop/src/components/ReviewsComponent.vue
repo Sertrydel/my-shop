@@ -2,11 +2,10 @@
     <div class="reviews">
         <h2>Відгуки</h2>
 
-        <!-- Форма додавання відгуку -->
         <form @submit.prevent="addReview" class="review-form">
-            <input v-model="newReview.name" type="text" placeholder="Ваше ім'я" required />
+            <input v-model="newReview.Name" type="text" placeholder="Ваше ім'я" required />
 
-            <select v-model="newReview.rating" required>
+            <select v-model="newReview.Rating" required>
                 <option value="" disabled>Оберіть рейтинг</option>
                 <option value="5">⭐⭐⭐⭐⭐</option>
                 <option value="4">⭐⭐⭐⭐</option>
@@ -15,31 +14,34 @@
                 <option value="1">⭐</option>
             </select>
 
-            <textarea v-model="newReview.comment" placeholder="Ваш коментар" required></textarea>
+            <textarea v-model="newReview.Comment" placeholder="Ваш коментар" required></textarea>
 
             <button type="submit">Додати відгук</button>
         </form>
 
-        <!-- Відображення відгуків -->
-        <div class="reviews-list">
-            <div v-for="(review, index) in reviews" :key="index" class="review">
-                <h3>{{ review.name }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Рейтинг</th>
+                    <th>Коментар</th>
+                </tr>
+            </thead>
 
-                <div class="rating">
-                    {{ "⭐".repeat(Number(review.rating)) }}
-                </div>
-
-                <p>{{ review.comment }}</p>
-            </div>
-
-            <p v-if="reviews.length === 0" class="empty">
-                Поки що відгуків немає. Будьте першим!
-            </p>
-        </div>
+            <tbody>
+                <tr v-for="(review, index) in reviews" :key="index">
+                    <td>{{ review.Name }}</td>
+                    <td>{{ review.Rating }}</td>
+                    <td>{{ review.Comment }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script>
+import Papa from "papaparse";
+
 export default {
     name: "ReviewsComponent",
 
@@ -48,37 +50,58 @@ export default {
             reviews: [],
 
             newReview: {
-                name: "",
-                rating: "",
-                comment: ""
+                Name: "",
+                Rating: "",
+                Comment: ""
             }
         };
     },
 
     created() {
-        const savedReviews = localStorage.getItem("reviews");
+        const csvContent = `Name,Rating,Comment
+Ілля,5,Дуже хороший товар!
+Андрій,4,Мені сподобалося.
+Вікторія,5,Все чудово!
+Ростислав,3,Нормальний товар.`;
 
-        if (savedReviews) {
-            this.reviews = JSON.parse(savedReviews);
-        }
+        Papa.parse(csvContent.trim(), {
+            header: true,
+            complete: (result) => {
+                this.reviews = result.data;
+
+                const savedReviews = localStorage.getItem("reviews");
+
+                if (savedReviews) {
+                    this.reviews.push(...JSON.parse(savedReviews));
+                }
+            }
+        });
     },
 
     methods: {
         addReview() {
             const review = {
-                name: this.newReview.name,
-                rating: this.newReview.rating,
-                comment: this.newReview.comment
+                Name: this.newReview.Name,
+                Rating: this.newReview.Rating,
+                Comment: this.newReview.Comment
             };
 
             this.reviews.push(review);
 
-            localStorage.setItem("reviews", JSON.stringify(this.reviews));
+            const savedReviews =
+                JSON.parse(localStorage.getItem("reviews")) || [];
+
+            savedReviews.push(review);
+
+            localStorage.setItem(
+                "reviews",
+                JSON.stringify(savedReviews)
+            );
 
             this.newReview = {
-                name: "",
-                rating: "",
-                comment: ""
+                Name: "",
+                Rating: "",
+                Comment: ""
             };
         }
     }
@@ -87,30 +110,30 @@ export default {
 
 <style scoped>
 .reviews {
-    width: 90%;
-    max-width: 900px;
-    margin: 40px auto;
+    width: 100%;
+    margin: 30px auto;
 }
 
 h2 {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .review-form {
+    width: 90%;
+    margin: 0 auto 30px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 35px;
+    gap: 10px;
 }
 
 .review-form input,
 .review-form select,
 .review-form textarea {
     padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
 }
 
 .review-form textarea {
@@ -121,7 +144,7 @@ h2 {
 .review-form button {
     padding: 10px;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     background-color: #333;
     color: white;
     font-size: 16px;
@@ -132,33 +155,21 @@ h2 {
     background-color: #555;
 }
 
-.reviews-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
 }
 
-.review {
-    padding: 15px;
+th,
+td {
     background-color: #f8f9fa;
-    border-radius: 8px;
+    padding: 4px;
     border: 1px solid #ddd;
+    text-align: left;
 }
 
-.review h3 {
-    margin: 0 0 5px;
-}
-
-.rating {
-    margin-bottom: 8px;
-}
-
-.review p {
-    margin: 0;
-}
-
-.empty {
-    text-align: center;
-    color: #777;
+th {
+    font-weight: bold;
 }
 </style>
