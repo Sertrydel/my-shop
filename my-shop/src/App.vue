@@ -1,23 +1,17 @@
 <template>
   <div id="app">
-    <ProductList />
-
-    <ReviewsComponent />
-
-    <FooterComponent />
+  <router-view></router-view>
+    <FooterComponent /> 
   </div>
 </template>
 
 <script>
-import ReviewsComponent from "./components/ReviewsComponent.vue";
-import ProductList from "./components/ProductList.vue";
-import FooterComponent from "./components/FooterComponent.vue";
+ import FooterComponent from './components/FooterComponent.vue';
+
 
 export default {
   components: {
-    ProductList,
-    FooterComponent,
-    ReviewsComponent
-  }
+     FooterComponent,
+  },
 };
 </script>

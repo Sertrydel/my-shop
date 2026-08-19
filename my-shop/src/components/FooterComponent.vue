@@ -8,9 +8,9 @@
 
     <div class="footer-section">
       <h3>Посилання</h3>
-      <a href="#">Про нас</a>
       <a href="#">Доставка</a>
       <a href="#">Оплата</a>
+      <router-link to="/admin">Про нас</router-link>
     </div>
 
     <div class="footer-section">
