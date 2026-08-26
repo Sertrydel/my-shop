@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import AdminDashboard from '@/pages/AdminDashboard.vue';
 import ManageProducts from '@/pages/ManageProducts.vue';
 import ManageReviews from '@/pages/ManageReviews.vue';
@@ -29,7 +29,7 @@ const routes = [
 
 
 const router = createRouter({
-  history: createWebHistory('my-shop'),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes,
 });
 
