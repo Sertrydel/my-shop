@@ -1,13 +1,13 @@
 <template>
-  
   <div class="product-list">
     <ProductCard
-      v-for="product in filteredProducts"
+      v-for="product in products"
       :key="product.id"
       :name="product.name"
       :description="product.description"
       :price="product.price"
       :image="product.image"
+      @add-to-cart="$emit('add-to-cart', product)"
     />
   </div>
 </template>
@@ -22,12 +22,6 @@ export default {
     ProductCard
   },
 
-  data() {
-    return {
-      searchQuery: ""
-    };
-  },
-
   props: {
     products: {
       type: Array,
@@ -35,19 +29,7 @@ export default {
     }
   },
 
-  computed: {
-    filteredProducts() {
-      const query = this.searchQuery.trim().toLowerCase();
-
-      if (!query) {
-        return this.products;
-      }
-
-      return this.products.filter(product =>
-        product.name.toLowerCase().includes(query)
-      );
-    }
-  }
+  emits: ["add-to-cart"]
 };
 </script>
 

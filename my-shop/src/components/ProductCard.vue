@@ -1,77 +1,102 @@
 <template>
-    <div class="product-card">
-        <img :src="image" :alt="name" class="product-image" />
+  <div class="product-card">
+    <img
+      :src="image"
+      :alt="name"
+      class="product-image"
+    />
 
-        <h2>{{ name }}</h2>
+    <h2>{{ name }}</h2>
 
-        <p>{{ description }}</p>
+    <p>{{ description }}</p>
 
-        <p class="price">{{ price }} грн</p>
+    <p class="price">
+      {{ price }} грн
+    </p>
 
-        <button class="buy-button">Купити</button>
-    </div>
+    <button
+      class="buy-button"
+      @click="$emit('add-to-cart')"
+    >
+      Купити
+    </button>
+  </div>
 </template>
 
 <script>
 export default {
-    name: "ProductCard",
+  name: "ProductCard",
 
-    props: {
-        name: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            required: true
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        image: {
-            type: String,
-            required: true
-        }
+  emits: ["add-to-cart"],
+
+  props: {
+    name: {
+      type: String,
+      required: true
+    },
+
+    description: {
+      type: String,
+      required: true
+    },
+
+    price: {
+      type: Number,
+      required: true
+    },
+
+    image: {
+      type: String,
+      required: true
     }
+  }
 };
 </script>
 
 <style scoped>
 .product-card {
-    margin: 20px;
-    max-width: 300px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+  margin: 20px;
+  max-width: 300px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  overflow: hidden;
+  padding-bottom: 10px;
 }
 
 .product-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-card h2 {
+  margin: 15px 10px 10px;
+}
+
+.product-card p {
+  margin: 10px;
 }
 
 .price {
-    font-size: 18px;
-    font-weight: bold;
-    color: #28a745;
+  font-size: 18px;
+  font-weight: bold;
+  color: #28a745;
 }
 
 .buy-button {
-    background-color: #007bff;
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-bottom: 20px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .buy-button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 </style>
-
