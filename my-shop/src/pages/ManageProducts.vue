@@ -1,73 +1,109 @@
 <template>
   <div class="manage-products">
-    <h1>Керування товарами</h1>
+    <h2>Пошук товарів</h2>
 
     <input
       v-model="searchQuery"
       type="text"
-      placeholder="Пошук товарів..."
+      placeholder="Введіть назву товару"
       class="search-input"
     />
 
-    <ProductList :products="filteredProducts" />
+    <ProductList
+      :products="filteredProducts"
+      @add-to-cart="addToCart"
+    />
+
+    <ManageCart />
   </div>
 </template>
 
 <script>
+import { ref, computed, provide } from "vue";
+import ManageCart from "../pages/ManageCart.vue";
 import ProductList from "../components/ProductList.vue";
 
 export default {
   name: "ManageProducts",
 
   components: {
-    ProductList
+    ProductList,
+    ManageCart
   },
 
-  data() {
-    return {
-      searchQuery: "",
+  setup() {
+    const searchQuery = ref("");
 
-      products: [
-        {
-          id: 1,
-          name: "Ноутбук",
-          description: "Потужний ноутбук для роботи та навчання",
-          price: 25000,
-          image: "https://files.foxtrot.com.ua/PhotoNew/img_0_58_22150_0_1_638012706724501157.jpg"
-        },
-        {
-          id: 2,
-          name: "Смартфон",
-          description: "Сучасний смартфон з якісною камерою",
-          price: 15000,
-          image: "https://img.freepik.com/free-photo/white-cell-phone-box-background_58702-4721.jpg"
-        },
-        {
-          id: 3,
-          name: "Навушники",
-          description: "Бездротові навушники з гарним звуком",
-          price: 3000,
-          image: "https://cdn.comfy.ua//media/catalog/product/w/h/wh-ch520_blue01_m.jpg"
-        },
-        {
-          id: 4,
-          name: "Клавіатура",
-          description: "Зручна клавіатура для комп'ютера",
-          price: 2000,
-          image: "https://img.freepik.com/free-photo/top-view-keyboard-mouse-arrangement_23-2149386333.jpg"
-        }
-      ]
-    };
-  },
+    const cartItems = ref([]);
 
-  computed: {
-    filteredProducts: function () {
-      return this.products.filter(function (product) {
+    const products = ref([
+      {
+        id: 1,
+        name: "Ноутбук",
+        description: "Потужний ноутбук для роботи та навчання",
+        price: 25000,
+        image:
+          "https://files.foxtrot.com.ua/PhotoNew/img_0_58_22150_0_1_638012706724501157.jpg"
+      },
+      {
+        id: 2,
+        name: "Смартфон",
+        description: "Сучасний смартфон з якісною камерою",
+        price: 15000,
+        image:
+          "https://img.freepik.com/free-photo/white-cell-phone-box-background_58702-4721.jpg"
+      },
+      {
+        id: 3,
+        name: "Навушники",
+        description: "Бездротові навушники з гарним звуком",
+        price: 3000,
+        image:
+          "https://cdn.comfy.ua//media/catalog/product/w/h/wh-ch520_blue01_m.jpg"
+      },
+      {
+        id: 4,
+        name: "Клавіатура",
+        description: "Зручна клавіатура для комп'ютера",
+        price: 2000,
+        image:
+          "https://img.freepik.com/free-photo/top-view-keyboard-mouse-arrangement_23-2149386333.jpg"
+      }
+    ]);
+
+    const filteredProducts = computed(function () {
+      return products.value.filter(function (product) {
         return product.name
           .toLowerCase()
-          .includes(this.searchQuery.toLowerCase());
-      }.bind(this));
+          .includes(searchQuery.value.toLowerCase());
+      });
+    });
+
+    const totalPrice = computed(function () {
+      return cartItems.value.reduce(function (sum, item) {
+        return sum + item.price;
+      }, 0);
+    });
+
+    function addToCart(product) {
+      cartItems.value.push(product);
     }
+
+    function removeItem(index) {
+      cartItems.value.splice(index, 1);
+    }
+
+    provide("cartItems", cartItems);
+    provide("totalPrice", totalPrice);
+    provide("addToCart", addToCart);
+    provide("removeItem", removeItem);
+
+    return {
+      searchQuery,
+      products,
+      filteredProducts,
+      addToCart
+    };
   }
 };
 </script>
@@ -77,7 +113,7 @@ export default {
   padding: 20px;
 }
 
-h1 {
+h2 {
   text-align: center;
   margin-bottom: 20px;
 }
